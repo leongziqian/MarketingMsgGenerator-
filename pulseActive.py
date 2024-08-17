@@ -49,19 +49,4 @@ caption, image_description = copy.split("\n\n")  # Assuming a newline separates 
 print("Instagram Caption:", caption)
 print("\nImage Description:", image_description)
 
-import openai
 
-# Define your image generation parameters
-prompt = """
-🚀 Crush your fitness goals with PulseActive – the ultimate partner in your journey to success! 🌟 Say hello to accurate health insights, better sleep, and tailored workout recommendations all in one sleek wearable! 🏃‍♂️💪 #PulseActive #FitnessCompanion
-"""
-
-response = openai.Image.create(
-  prompt=prompt,
-  n=1,  # Number of images to generate
-  size="1024x1024"  # Image size options: 1024x1024, 1024x1792, 1792x1024
-)
-
-# Get the image URL
-image_url = response['data'][0]['url']
-print(image_url)

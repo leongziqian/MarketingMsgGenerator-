@@ -1,52 +1,55 @@
-import json
+import streamlit as st
+import openai
 
-# Define your product details, target audience, channel, and desired tone
-prompt_data = {
-    "product_details": {
-        "name": "PulseActive",
-        "features": ["Heart rate monitoring", "Sleep tracking", "GPS", "Personalized workout recommendations"],
-        "benefits": ["Accurate health insights", "Better sleep", "Enhanced fitness tracking", "Tailored fitness plans"]
-    },
-    "target_audience": {
-        "description": "Fitness enthusiasts who are passionate about achieving their goals and staying on top of their progress",
-        "pain_points": ["Difficulty tracking progress", "Lack of personalized workout guidance", "Inconsistent motivation"],
-        "desires": ["Achieving fitness goals", "Accessing accurate health data", "Staying motivated through insights"]
-    },
-    "channel": "Instagram post",
-    "tone": "Motivational, empowering, engaging"
-}
+# Define the PulseActive product details and target audience specifics
+product_name = "PulseActive Smartwatch"
+product_features = ["Heart rate monitoring", "GPS tracking", "Sleep analysis", "Water resistance", "Customizable watch faces"]
+product_benefits = ["Real-time health tracking", "Improved fitness goals", "Enhanced motivation through personalized reminders", "Durable and stylish design"]
+target_audience = "Fitness enthusiasts"
+pain_points = ["Inconsistent tracking", "Difficulty staying motivated", "Lack of reliable fitness data"]
+desires = ["Accurate tracking", "Motivation to reach fitness goals", "A durable, stylish accessory"]
+channel = "Instagram Ad"
+tone = "Motivational, energizing, and focused on performance"
+cta = "Swipe up to learn more and take your fitness to the next level with PulseActive!"
+image_description = "A fitness enthusiast mid-workout, wearing the PulseActive smartwatch. The watch screen displays live heart rate and GPS tracking, set against a backdrop of a scenic outdoor trail."
 
-# Craft the prompt using the structured data
-prompt = f"""
-You're a marketing copywriter. Write an Instagram post caption and image description to promote the {prompt_data['product_details']['name']}, a new wearable fitness tracker.
+# Function to generate marketing copy
+def generate_copy(product_name, product_features, product_benefits, target_audience, pain_points, desires, channel, tone, cta, image_description):
+    prompt = f"""
+    You're a marketing copywriter creating an {channel} for {product_name}, a smartwatch designed for {target_audience}.
 
-**Target audience:** {prompt_data['target_audience']['description']}
+    **Target Audience:** {target_audience}
 
-**Highlight:**
-* Key features: {', '.join(prompt_data['product_details']['features'])}
-* Benefits: {', '.join(prompt_data['product_details']['benefits'])}
-* Address these pain points: {', '.join(prompt_data['target_audience']['pain_points'])}
-* Appeal to these desires: {', '.join(prompt_data['target_audience']['desires'])}
+    **Highlight:**
+    * Key features: {', '.join(product_features)}
+    * Benefits: {', '.join(product_benefits)}
+    * Address these pain points: {', '.join(pain_points)}
+    * Appeal to these desires: {', '.join(desires)}
 
-**Tone:** {prompt_data['tone']}
+    **Tone:** {tone}
 
-**Image description:** A photo of the {prompt_data['product_details']['name']} being worn by an active individual, showing the sleek design and a glimpse of the health data displayed on the screen.
-"""
+    **Call to Action:** {cta}
 
-# Generate the marketing copy using OpenAI
-response = openai.ChatCompletion.create(
-  model="gpt-3.5-turbo",
-  messages=[
-        {"role": "system", "content": "You are a marketing copywriter."},
-        {"role": "user", "content": prompt}
-    ]
-)
-copy = response['choices'][0]['message']['content']
+    **Image Description:** {image_description}
+    """
 
-# Extract caption and image description from the response (you might need some text processing here)
-caption, image_description = copy.split("\n\n")  # Assuming a newline separates caption and description
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a marketing copywriter."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    copy = response['choices'][0]['message']['content']
+    caption, image_description = copy.split("\n\n")
+    return caption, image_description
 
-print("Instagram Caption:", caption)
-print("\nImage Description:", image_description)
+# Streamlit UI
+st.title("PulseActive Smartwatch Marketing Copy Generator")
 
-
+if st.button("Generate Marketing Copy"):
+    caption, image_description = generate_copy(product_name, product_features, product_benefits, target_audience, pain_points, desires, channel, tone, cta, image_description)
+    st.subheader("Instagram Ad Caption:")
+    st.write(caption)
+    st.subheader("Image Description:")
+    st.write(image_description)
